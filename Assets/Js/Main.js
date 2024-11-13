@@ -242,3 +242,17 @@ function Listner_Sala(_Email_Sala) {
         }
     })
 }
+
+window.addEventListener('beforeunload', (event) => {
+    // ? Aqui você pode chamar uma função para salvar algo, limpar dados, etc.
+    if(Sala_Atual.Criador == Usuario.email) {
+        Excluir_Sala() // Exemplo de função
+    } else {
+        Adversario_Saiu_Da_Sala()
+    }
+    Abrir_Divs_Opcs('Container_Opcs_Inicio')
+
+    // * Essa mensagem só funciona em alguns navegadores
+    event.preventDefault()
+    event.returnValue = '' // Isso ajuda a exibir uma mensagem de confirmação no navegador
+})

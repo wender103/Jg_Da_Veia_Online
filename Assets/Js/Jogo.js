@@ -157,12 +157,16 @@ function Reiniciar_JogoDaVelha(Desmarcar_Reiniciar) {
         let proxJogador
 
         if (resultado.vencedor !== undefined) {
+            console.log('Caiu no primeiro resultado');
+            
             // Se houve um vencedor, o próximo jogador será o vencedor
             proxJogador = resultado.vencedor === 0 ? Sala_Atual.Criador : Sala_Atual.Oponente
         } else if (resultado.velha) {
-            // Se deu velha, o próximo jogador será o oposto de quem terminou a última jogada
-            proxJogador = Sala_Atual.Jogadas.Vez_De === Sala_Atual.Criador ? Sala_Atual.Oponente : Sala_Atual.Criador
+            console.log('Deu velha samerda');
+            proxJogador = Sala_Atual.Jogadas.Vez_De
         } else {
+            console.log('Uai nada?');
+            
             // Se ainda não houver resultado, define o próximo jogador como o criador da sala
             proxJogador = Sala_Atual.Criador
         }
@@ -173,8 +177,6 @@ function Reiniciar_JogoDaVelha(Desmarcar_Reiniciar) {
             'Reiniciar_Jogo': true
         })
     } else if (Desmarcar_Reiniciar) {
-        
-        
         db.collection('Salas').doc(Sala_Atual.Criador).update({ Reiniciar_Jogo: false })
     }
 
