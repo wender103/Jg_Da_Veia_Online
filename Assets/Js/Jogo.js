@@ -27,7 +27,7 @@ function Marcar_Posicao(Posicao, Jogador, Checar = false, Salvar = false) {
         const celula = container.children[Posicao]
 
         if (Sala_Atual.Jogadas.Vez_De !== Usuario.email) {
-            console.log("Não é sua vez!") // ! Não é a vez do usuário
+             // ! Não é a vez do usuário
             return
         }
 
@@ -100,12 +100,13 @@ function Marcar_Posicao(Posicao, Jogador, Checar = false, Salvar = false) {
                 }
             }
         } else {
-            console.log(`Posição ${Posicao} já marcada!`) // * Posição já marcada
+             // * Posição já marcada
         }
     }
 }
 
 // Função para verificar se alguém ganhou ou deu velha
+let Ultimo_Resultado = undefined
 function Checar_Vitoria() {
     const linhasVitoria = [
         [0, 1, 2], // Linha superior
@@ -120,20 +121,19 @@ function Checar_Vitoria() {
 
     for (const linha of linhasVitoria) {
         const [a, b, c] = linha
-
-        // Verifica se há uma linha completa com o mesmo jogador
         if (estadoJogo[a] !== null && estadoJogo[a] === estadoJogo[b] && estadoJogo[a] === estadoJogo[c]) {
             Jogo_Acabou = true
             document.getElementById('Container_Estrutura_Jogo_Da_Veia').classList.add('Fim')
+            Ultimo_Resultado = { vencedor: estadoJogo[a] } // Armazena o resultado da �ltima vitória
             return { vencedor: estadoJogo[a] } // Retorna o jogador vencedor (0 ou 1)
         }
     }
 
-    // Verifica se todas as posições estão preenchidas (deu velha)
     const deuVelha = estadoJogo.every(posicao => posicao !== null)
     if (deuVelha) {
         document.getElementById('Container_Estrutura_Jogo_Da_Veia').classList.add('Fim')
         Jogo_Acabou = true
+        Ultimo_Resultado = { velha: true } // Armazena o resultado da �ltima velha
         return { velha: true } // Retorna um objeto indicando que deu velha
     }
 
@@ -142,26 +142,43 @@ function Checar_Vitoria() {
 
 // Função para reiniciar o jogo
 function Reiniciar_JogoDaVelha(Desmarcar_Reiniciar) {
-    estadoJogo = Array(9).fill(null) // Reinicia o estado do jogo
-    Sala_Atual.Jogadas.Movimentos = [] // Limpa os movimentos salvos
-    Sala_Atual.Jogadas.Vez_De = Sala_Atual.Criador // Define o criador como o primeiro a jogar
+    estadoJogo = Array(9).fill(null)
     Img_Resultado_Partida.style.display = 'none'
     Btn_Jogar_Novamente.style.display = 'none'
     P_Jogar_Novamente.style.display = 'none'
     document.getElementById('Container_Estrutura_Jogo_Da_Veia').classList.remove('Fim')
     Jogo_Acabou = false
 
-    if(Usuario.email == Sala_Atual.Criador) {
+    if (Usuario.email === Sala_Atual.Criador) {
+        // Define o próximo jogador baseado no resultado do último jogo
+        const resultado = Ultimo_Resultado
+        
+        
+        let proxJogador
+
+        if (resultado.vencedor !== undefined) {
+            // Se houve um vencedor, o próximo jogador será o vencedor
+            proxJogador = resultado.vencedor === 0 ? Sala_Atual.Criador : Sala_Atual.Oponente
+        } else if (resultado.velha) {
+            // Se deu velha, o próximo jogador será o oposto de quem terminou a última jogada
+            proxJogador = Sala_Atual.Jogadas.Vez_De === Sala_Atual.Criador ? Sala_Atual.Oponente : Sala_Atual.Criador
+        } else {
+            // Se ainda não houver resultado, define o próximo jogador como o criador da sala
+            proxJogador = Sala_Atual.Criador
+        }
+
         db.collection('Salas').doc(Sala_Atual.Criador).update({
             'Jogadas.Movimentos': [],
-            'Jogadas.Vez_De': Sala_Atual.Criador,
+            'Jogadas.Vez_De': proxJogador,
             'Reiniciar_Jogo': true
         })
-    } else if(Desmarcar_Reiniciar) {
+    } else if (Desmarcar_Reiniciar) {
+        
+        
         db.collection('Salas').doc(Sala_Atual.Criador).update({ Reiniciar_Jogo: false })
     }
 
-    Inicializar_JogoDaVelha() // Redesenha o tabuleiro
+    Inicializar_JogoDaVelha()
 }
 
 Btn_Jogar_Novamente.addEventListener('click', () => {

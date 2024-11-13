@@ -115,11 +115,6 @@ function Carregar_Salas_Criadas() {
         Snapshot_Salas.forEach(Sala => {
             Todas_As_Salas.push(Sala.data())
 
-            console.log(Sala.data().Oponente)
-            console.log(!Sala.data().Oponente);
-            
-            
-
             if(Sala.data().Is_Publica && !Sala.data().Oponente) {
                 const Div_Sala = document.createElement('div')
                 const Nome_Sala = document.createElement('p')
@@ -225,7 +220,7 @@ function Listner_Sala(_Email_Sala) {
                     }
                 })
 
-                if(dadosSala.Reiniciar_Jogo) {
+                if(dadosSala.Reiniciar_Jogo && Usuario.email == dadosSala.Oponente) {
                     Reiniciar_JogoDaVelha(true)
                 }
 
