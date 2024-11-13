@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo da Veia Online</title>
+    <link rel="stylesheet" href="Assets/Styles/Home/Home.css">
+    <link rel="stylesheet" href="Assets/Styles/Geral/Geral.css">
+</head>
+<body>
+    <button id="Btn_Voltar" onclick="Voltar_Pagina()">
+        <img src="Assets/Imgs/Icons/Voltar.svg" alt="Voltar">
+    </button>
+
+    <div id="Container_Opcs_Inicio" class="Divs_Opcs Active">
+        <h1>J<span>o</span>go Das <span>V</span>eia</h1>
+        <button id="Btn_Container_Criar_Sala" onclick="Abrir_Divs_Opcs(this.id)">Criar Sala</button>
+        <button id="Btn_Container_Entrar_Em_Sala" onclick="Abrir_Divs_Opcs(this.id)">Entrar Em Uma Sala</button>
+    </div>
+
+    <div id="Container_Entrar_Em_Sala" class="Divs_Opcs">
+        <h1>Entrar Em Uma Sala</h1>
+        <input type="text" placeholder="Digite O Código Da Sala" id="Input_Entrar_Sala_Pelo_Codigo">
+
+        <p>Salas Públicas</p>
+
+        <div id="Container_Salas_Criadas">
+        </div>
+
+        <button id="Btn_Atualizar_Salas">Atualizar Salas</button>
+    </div>
+
+    <div id="Container_Criar_Sala" class="Divs_Opcs">
+        <h1>Criar Sala</h1>
+        <input type="text" placeholder="Digite O Nome Da Sala" id="Input_Nome_Da_Nova_Sala">
+        <div>
+            <input type="checkbox" id="Checkbox_Sala_Publica" checked="true">
+            <label for="Checkbox_Sala_Publica">Sala Pública</label>
+        </div>
+
+        <button id="Btn_Criar_Sala" onclick="Criar_Sala()">Criar Sala</button>
+    </div>
+
+    <div id="Container_Esperando" class="Divs_Opcs">
+        <h1>Esperando Oponente</h1>
+        <p>Aguarde Enquanto o Oponente Se Conecta</p>
+        <span id="Codigo_Da_Sala"></span>
+    </div>
+
+    <div id="Container_Jogo_Da_Veia" class="Divs_Opcs">
+        <div id="Container_Placar_Jogo_Da_Veia">
+            <div id="Container_Placar_X">
+                <p>X</p>
+                <span id="Valor_Placar_X">- 0</span>
+            </div>
+            <div id="Container_Placar_O">
+                <p>O</p>
+                <span id="Valor_Placar_O">- 0</span>
+            </div>
+        </div>
+
+        <div id="Container_Resultado_Partida">
+            <img src="Assets/Imgs/Icons/Win.png" id="Img_Resultado_Partida">
+        </div>
+
+        <div id="Container_Estrutura_Jogo_Da_Veia">
+        </div>
+
+        <div id="Container_Btns_Jogar_Novamente">
+            <p id="P_Jogar_Novamente">Esperando O Adm Iniciar</p>
+            <button id="Btn_Jogar_Novamente">Jogar Novamente</button>
+        </div>
+    </div>
+    
+    <!--? Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/8.2.10/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.7/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.7/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.10/firebase-auth.js"></script>
+    <script src="Assets/Js/Firebase.js"></script>
+
+    <!--? My Scripts -->
+    <script src="Assets/Js/Main.js"></script>
+    <script src="Assets/Js/Jogo.js"></script>
+</body>
+</html>

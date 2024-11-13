@@ -1,0 +1,228 @@
+@import url("../Geral/Geral.css");
+body button#Btn_Voltar {
+  top: 10px;
+  left: 10px;
+  position: absolute;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+body button#Btn_Voltar.Active {
+  display: flex;
+}
+body div.Divs_Opcs {
+  display: none;
+}
+body div.Divs_Opcs.Active {
+  display: flex;
+}
+body div#Container_Opcs_Inicio {
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  min-height: 100vh;
+  gap: 24px;
+}
+body div#Container_Opcs_Inicio h1 {
+  margin-bottom: 40px;
+}
+body div#Container_Opcs_Inicio h1 span {
+  color: var(--Verde);
+}
+body div#Container_Opcs_Inicio h1 span:first-child {
+  color: var(--Vermelho);
+}
+body div#Container_Opcs_Inicio button {
+  border-radius: 4px;
+  border: 1px solid var(--Preto);
+  padding: 15px 20px;
+  background-color: transparent;
+  width: 95%;
+  max-width: 200px;
+  cursor: pointer;
+}
+body div#Container_Opcs_Inicio button:hover {
+  transition: 0.2s scale ease-in-out;
+  scale: 1.05;
+}
+body div#Container_Entrar_Em_Sala {
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  min-height: 100vh;
+  gap: 24px;
+}
+body div#Container_Entrar_Em_Sala input {
+  margin-bottom: 30px;
+}
+body div#Container_Entrar_Em_Sala div#Container_Salas_Criadas {
+  max-width: 400px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 10px;
+}
+body div#Container_Entrar_Em_Sala div#Container_Salas_Criadas div.Salas {
+  padding: 15px 20px;
+  border-radius: 4px;
+  border: 1px solid black;
+  width: 95%;
+  cursor: pointer;
+}
+body div#Container_Entrar_Em_Sala div#Container_Salas_Criadas div.Salas:hover {
+  transition: 0.2s scale ease-in-out;
+  scale: 1.05;
+}
+body div#Container_Entrar_Em_Sala button#Btn_Atualizar_Salas {
+  position: fixed;
+  bottom: 10px;
+  left: 50%;
+  transform: translate(-50%);
+  border-radius: 4px;
+  border: 1px solid var(--Preto);
+  padding: 15px 20px;
+  background-color: transparent;
+  width: 95%;
+  max-width: 380px;
+  cursor: pointer;
+}
+body div#Container_Entrar_Em_Sala button#Btn_Atualizar_Salas.Bloqueado {
+  cursor: not-allowed;
+  color: #898989;
+  border: 1px solid #898989;
+}
+body div#Container_Criar_Sala {
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  min-height: 100vh;
+  gap: 24px;
+}
+body div#Container_Criar_Sala div {
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  gap: 10px;
+}
+body div#Container_Criar_Sala div input {
+  cursor: pointer;
+}
+body div#Container_Criar_Sala button {
+  border-radius: 4px;
+  border: 1px solid var(--Preto);
+  padding: 15px 20px;
+  background-color: transparent;
+  width: 95%;
+  max-width: 380px;
+  cursor: pointer;
+}
+body div#Container_Criar_Sala button:hover {
+  transition: 0.2s scale ease-in-out;
+  scale: 1.05;
+}
+body div#Container_Esperando {
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  min-height: 100vh;
+  gap: 24px;
+}
+body div#Container_Esperando span#Codigo_Da_Sala {
+  position: fixed;
+  bottom: 10px;
+  left: 50%;
+  transform: translate(-50%);
+}
+body div#Container_Jogo_Da_Veia {
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin: auto;
+  min-height: 100vh;
+  gap: 24px;
+  width: 95%;
+  max-width: 400px;
+}
+body div#Container_Jogo_Da_Veia div#Container_Placar_Jogo_Da_Veia {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 1.7em;
+}
+body div#Container_Jogo_Da_Veia div#Container_Placar_Jogo_Da_Veia div {
+  display: flex;
+  gap: 10px;
+}
+body div#Container_Jogo_Da_Veia div#Container_Placar_Jogo_Da_Veia div#Container_Placar_X p {
+  color: var(--Verde);
+}
+body div#Container_Jogo_Da_Veia div#Container_Placar_Jogo_Da_Veia div p {
+  color: var(--Vermelho);
+}
+body div#Container_Jogo_Da_Veia div#Container_Resultado_Partida {
+  width: 100%;
+  max-width: 150px;
+  height: 118px;
+}
+body div#Container_Jogo_Da_Veia div#Container_Resultado_Partida img {
+  scale: 1/1;
+  -o-object-fit: contain;
+     object-fit: contain;
+  display: none;
+}
+body div#Container_Jogo_Da_Veia div#Container_Resultado_Partida img.Active {
+  display: block;
+}
+body div#Container_Jogo_Da_Veia div#Container_Estrutura_Jogo_Da_Veia {
+  display: grid;
+  grid-template-columns: repeat(3, 133px);
+  grid-template-rows: repeat(3, 133px);
+  gap: 5px;
+}
+body div#Container_Jogo_Da_Veia div#Container_Estrutura_Jogo_Da_Veia.Fim {
+  cursor: not-allowed;
+}
+body div#Container_Jogo_Da_Veia div#Container_Estrutura_Jogo_Da_Veia.Fim .celula {
+  cursor: not-allowed;
+}
+body div#Container_Jogo_Da_Veia div#Container_Estrutura_Jogo_Da_Veia .celula {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 133px;
+  height: 133px;
+  font-size: 4em;
+  font-weight: bold;
+  background-color: transparent;
+  border: 1px solid #333;
+  cursor: pointer;
+}
+body div#Container_Jogo_Da_Veia div#Container_Estrutura_Jogo_Da_Veia .celula.marcado {
+  cursor: not-allowed;
+  color: #333;
+}
+body div#Container_Jogo_Da_Veia div#Container_Btns_Jogar_Novamente p {
+  display: none;
+}
+body div#Container_Jogo_Da_Veia div#Container_Btns_Jogar_Novamente button {
+  display: none;
+  border-radius: 4px;
+  border: 1px solid var(--Preto);
+  padding: 15px 20px;
+  background-color: transparent;
+  width: 95%;
+  max-width: 380px;
+  cursor: pointer;
+}
+body div#Container_Jogo_Da_Veia div#Container_Btns_Jogar_Novamente button:hover {
+  transition: 0.2s scale ease-in-out;
+  scale: 1.05;
+}/*# sourceMappingURL=Home.css.map */
