@@ -203,6 +203,15 @@ body {
             width: 100%;
             max-width: 150px;
             height: 118px;
+            position: relative;
+
+            p#P_Sua_Vez_Aviso {
+                width: 191px;
+                display: block;
+                text-align: center;
+                font-size: 1.5em;
+                position: absolute;
+            }
 
             img {
                 // width: 100%;

@@ -177,6 +177,7 @@ function Entrar_Na_Sala(_Codigo_Sala) {
                         Oponente: Usuario.email
                     }).then(() => {
                         Listner_Sala(Sala.data().Criador)
+                        document.getElementById('P_Sua_Vez_Aviso').innerText = 'Vez Do Oponente'
                     })
                 }
             }
@@ -224,8 +225,8 @@ function Listner_Sala(_Email_Sala) {
                     Reiniciar_JogoDaVelha(true)
                 }
 
-                document.getElementById('Valor_Placar_X').innerText = `- ${dadosSala.Pontos.Player1}`
-                document.getElementById('Valor_Placar_O').innerText = `- ${dadosSala.Pontos.Player2}`
+                document.getElementById('Valor_Placar_X').innerText = `: ${dadosSala.Pontos.Player1}`
+                document.getElementById('Valor_Placar_O').innerText = `: ${dadosSala.Pontos.Player2}`
             } else {
                 // Caso não tenha oponente, volta para a pág de espera
                 if (Pagina_Atual.ID == 'Container_Jogo_Da_Veia') {
@@ -233,6 +234,12 @@ function Listner_Sala(_Email_Sala) {
                     Reiniciar_JogoDaVelha()
                     Sala_Atual = dadosSala
                 }
+            }
+
+            if(Usuario.email == dadosSala.Jogadas.Vez_De) {
+                P_Sua_Vez_Aviso.innerText = 'Sua Vez'
+            } else {
+                P_Sua_Vez_Aviso.innerText = 'Vez Do Oponente'
             }
         } else {
             if(Sala_Atual.Criador != Usuario.email) {

@@ -1,5 +1,6 @@
 let estadoJogo = Array(9).fill(null)
 let Jogo_Acabou = false
+const P_Sua_Vez_Aviso = document.getElementById('P_Sua_Vez_Aviso')
 
 // Função para inicializar o tabuleiro
 function Inicializar_JogoDaVelha() {
@@ -13,6 +14,8 @@ function Inicializar_JogoDaVelha() {
         celula.addEventListener('click', () => Marcar_Posicao(i, Sala_Atual.Criador == Usuario.email ? 0 : 1, false, true))
         container.appendChild(celula)
     }
+
+    P_Sua_Vez_Aviso.style.display = 'block'
 }
 
 const P_Jogar_Novamente = document.getElementById('P_Jogar_Novamente')
@@ -56,11 +59,12 @@ function Marcar_Posicao(Posicao, Jogador, Checar = false, Salvar = false) {
 
             // Checa se houve vitória ou deu velha
             const resultado = Checar_Vitoria()
+            let Num_Jogador = Sala_Atual.Criador == Usuario.email ? 0 : 1
             if (resultado) {
                 if (resultado.vencedor !== undefined) {
                     // alert(`O jogador ${resultado.vencedor === 0 ? 'X' : 'O'} venceu!`)
-                    let Num_Jogador = Sala_Atual.Criador == Usuario.email ? 0 : 1
                     Img_Resultado_Partida.classList.add('Active')
+                    P_Sua_Vez_Aviso.style.display = 'none'
                     Img_Resultado_Partida.src = Num_Jogador == resultado.vencedor ? 'Assets/Imgs/Icons/Win.png' : 'Assets/Imgs/Icons/Lose.png'
 
                     if(Usuario.email == Sala_Atual.Criador) {
@@ -97,6 +101,16 @@ function Marcar_Posicao(Posicao, Jogador, Checar = false, Salvar = false) {
 
                     Img_Resultado_Partida.src = 'Assets/Imgs/Icons/Draw.png'
                     Img_Resultado_Partida.style.display = 'block'
+                    P_Sua_Vez_Aviso.style.display = 'none'
+
+                }
+            } else {
+                P_Sua_Vez_Aviso.style.display = 'block'
+
+                if(Num_Jogador != Jogador) {
+                    P_Sua_Vez_Aviso.innerText = 'Sua Vez'
+                } else {
+                    P_Sua_Vez_Aviso.innerText = 'Vez Do Oponente'
                 }
             }
         } else {
@@ -149,24 +163,17 @@ function Reiniciar_JogoDaVelha(Desmarcar_Reiniciar) {
     document.getElementById('Container_Estrutura_Jogo_Da_Veia').classList.remove('Fim')
     Jogo_Acabou = false
 
+    let proxJogador
     if (Usuario.email === Sala_Atual.Criador) {
         // Define o próximo jogador baseado no resultado do último jogo
         const resultado = Ultimo_Resultado
         
-        
-        let proxJogador
-
-        if (resultado.vencedor !== undefined) {
-            console.log('Caiu no primeiro resultado');
-            
+        if (resultado.vencedor !== undefined) {            
             // Se houve um vencedor, o próximo jogador será o vencedor
             proxJogador = resultado.vencedor === 0 ? Sala_Atual.Criador : Sala_Atual.Oponente
         } else if (resultado.velha) {
-            console.log('Deu velha samerda');
             proxJogador = Sala_Atual.Jogadas.Vez_De
-        } else {
-            console.log('Uai nada?');
-            
+        } else {            
             // Se ainda não houver resultado, define o próximo jogador como o criador da sala
             proxJogador = Sala_Atual.Criador
         }
@@ -176,6 +183,7 @@ function Reiniciar_JogoDaVelha(Desmarcar_Reiniciar) {
             'Jogadas.Vez_De': proxJogador,
             'Reiniciar_Jogo': true
         })
+
     } else if (Desmarcar_Reiniciar) {
         db.collection('Salas').doc(Sala_Atual.Criador).update({ Reiniciar_Jogo: false })
     }
