@@ -3,10 +3,20 @@ let Pagina_Atual = {
     Classe: undefined
 }
 
+let Contra_Bot = false
+
 let Sala_Atual = undefined
 
 function Abrir_Divs_Opcs(_Divs_Opcs) {
     if(Usuario) {
+        if(_Divs_Opcs == 'Container_Contra_Bot') {
+            Contra_Bot = true
+            _Divs_Opcs = 'Container_Jogo_Da_Veia'
+            Jogar_Contra_Bot(true)
+        } else {
+            Jogar_Contra_Bot(false)
+        }
+
         _Divs_Opcs = _Divs_Opcs.replace('Btn_', '')
         
         let Todas_As_Divs_Opcs = document.querySelectorAll('.Divs_Opcs')
@@ -242,7 +252,12 @@ function Listner_Sala(_Email_Sala) {
                 P_Sua_Vez_Aviso.innerText = 'Vez Do Oponente'
             }
         } else {
-            if(Sala_Atual.Criador != Usuario.email) {
+            try {
+                if(Sala_Atual.Criador != Usuario.email) {
+                    Abrir_Divs_Opcs('Container_Entrar_Em_Sala')
+                    Carregar_Salas_Criadas()
+                } 
+            } catch (error) {
                 Abrir_Divs_Opcs('Container_Entrar_Em_Sala')
                 Carregar_Salas_Criadas()
             }

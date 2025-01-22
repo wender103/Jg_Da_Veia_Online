@@ -2,6 +2,128 @@ let estadoJogo = Array(9).fill(null)
 let Jogo_Acabou = false
 const P_Sua_Vez_Aviso = document.getElementById('P_Sua_Vez_Aviso')
 
+function Jogar_Contra_Bot(Bot_Ativo=false) {
+    Contra_Bot = Bot_Ativo
+
+    if (Bot_Ativo) {
+        Inicializar_JogoDaVelha()
+
+        Sala_Atual = {
+            Nome: 'Contra Bot',
+            Criador: Usuario.email,
+            Is_Publica: false,
+            Oponente: 'Bot',
+            Codigo: db.collection('Salas').doc().id,
+            Jogadas: {
+                Vez_De: Usuario.email,
+                Movimentos: []
+            },
+            Reiniciar_Jogo: false,
+            Pontos: {
+                Player1: 0,
+                Player2: 0
+            },
+        }
+    } else {
+        estadoJogo = Array(9).fill(null)
+        Img_Resultado_Partida.style.display = 'none'
+        Btn_Jogar_Novamente.style.display = 'none'
+        P_Jogar_Novamente.style.display = 'none'
+        document.getElementById('Container_Estrutura_Jogo_Da_Veia').classList.remove('Fim')
+        Jogo_Acabou = false
+        Sala_Atual = undefined
+        P_Sua_Vez_Aviso.innerText = 'Sua Vez'
+        document.getElementById('Valor_Placar_X').innerText = `: 0`
+        document.getElementById('Valor_Placar_O').innerText = `: 0`
+    }
+}
+
+function Posicao_Ja_Marcada(posicao) {
+    const Jogadas_Ja_Feitas = Sala_Atual.Jogadas.Movimentos
+    return Jogadas_Ja_Feitas.some(jogada => jogada.Posicao === posicao)
+}
+
+function Jogadas_Do_Bot() {
+    function delayAleatorio(callback) {
+    const tempo = Math.random() * (1.5 - 0.9) + 0.9 // Gera um tempo entre 0.5s e 1.5s
+        setTimeout(() => {
+            callback() // Executa a função passada
+        }, tempo * 1000) // Converte pra milissegundos
+    }
+
+    // Exemplo de uso
+    delayAleatorio(() => {
+        Mente_Bot()
+    })
+
+    function Mente_Bot() {
+        const Jogadas_Ja_Feitas = Sala_Atual.Jogadas.Movimentos
+
+        const tabuleiro = Array(9).fill(null)
+        Jogadas_Ja_Feitas.forEach(jogada => {
+            tabuleiro[jogada.Posicao] = jogada.Jogador
+        })
+
+        const combinacoesVencedoras = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8], // Linhas
+            [0, 3, 6], [1, 4, 7], [2, 5, 8], // Colunas
+            [0, 4, 8], [2, 4, 6]            // Diagonais
+        ]
+
+        function verificarVitoria(tab, jogador) {
+            return combinacoesVencedoras.some(combinacao =>
+                combinacao.every(pos => tab[pos] === jogador)
+            )
+        }
+
+        function tabuleiroCheio(tab) {
+            return tab.every(pos => pos !== null)
+        }
+
+        function minimax(tab, jogador) {
+            if (verificarVitoria(tab, 1)) return { score: 10 }  // Bot vence
+            if (verificarVitoria(tab, 0)) return { score: -10 } // Jogador vence
+            if (tabuleiroCheio(tab)) return { score: 0 }        // Empate
+
+            const movimentos = []
+
+            tab.forEach((_, index) => {
+                if (tab[index] === null) {
+                    const novoTabuleiro = [...tab]
+                    novoTabuleiro[index] = jogador
+
+                    const resultado = minimax(novoTabuleiro, jogador === 1 ? 0 : 1)
+                    movimentos.push({
+                        index,
+                        score: resultado.score
+                    })
+                }
+            })
+
+            if (jogador === 1) {
+                return movimentos.reduce((melhor, atual) =>
+                    atual.score > melhor.score ? atual : melhor
+                )
+            } else {
+                return movimentos.reduce((melhor, atual) =>
+                    atual.score < melhor.score ? atual : melhor
+                )
+            }
+        }
+
+        const melhorMovimento = minimax(tabuleiro, 1)
+        if (melhorMovimento.index !== undefined) {
+            console.log("Bot jogou na posição:", melhorMovimento.index)
+            Marcar_Posicao(melhorMovimento.index, 1, false, true)
+            Sala_Atual.Jogadas.Vez_De = Usuario.email
+            P_Sua_Vez_Aviso.innerText = 'Sua Vez'
+        } else {
+            console.log("Nenhuma jogada possível!")
+        }
+    }
+}
+
+
 // Função para inicializar o tabuleiro
 function Inicializar_JogoDaVelha() {
     const container = document.getElementById('Container_Estrutura_Jogo_Da_Veia')
@@ -29,7 +151,7 @@ function Marcar_Posicao(Posicao, Jogador, Checar = false, Salvar = false) {
         const container = document.getElementById('Container_Estrutura_Jogo_Da_Veia')
         const celula = container.children[Posicao]
 
-        if (Sala_Atual.Jogadas.Vez_De !== Usuario.email) {
+        if (Sala_Atual.Jogadas.Vez_De !== Usuario.email && Sala_Atual.Jogadas.Vez_De != 'Bot') {
              // ! Não é a vez do usuário
             return
         }
@@ -51,10 +173,28 @@ function Marcar_Posicao(Posicao, Jogador, Checar = false, Salvar = false) {
                     Jogador: Jogador
                 })
 
-                db.collection('Salas').doc(Sala_Atual.Criador).update({
-                    'Jogadas.Movimentos': Sala_Atual.Jogadas.Movimentos,
-                    'Jogadas.Vez_De': Jogador === 0 ? Sala_Atual.Oponente : Sala_Atual.Criador
-                })
+                if(!Contra_Bot) {
+                    db.collection('Salas').doc(Sala_Atual.Criador).update({
+                        'Jogadas.Movimentos': Sala_Atual.Jogadas.Movimentos,
+                        'Jogadas.Vez_De': Jogador === 0 ? Sala_Atual.Oponente : Sala_Atual.Criador
+                    })
+                } else {
+                    if(Jogador == 0) {
+                        P_Sua_Vez_Aviso.innerText = 'Vez Do Oponente'
+                        Sala_Atual.Jogadas.Vez_De = 'Bot'
+
+                        let Num_Espacos = 0
+                        for(let i = 0; i < estadoJogo.length; i++) {
+                            if(estadoJogo[i] == null) {
+                                Num_Espacos++
+                            }
+                        }
+
+                        if(Num_Espacos >= 1) {
+                            Jogadas_Do_Bot()
+                        }
+                    }
+                }
             }
 
             // Checa se houve vitória ou deu velha
@@ -86,7 +226,12 @@ function Marcar_Posicao(Posicao, Jogador, Checar = false, Salvar = false) {
                             Pontos.Player2 += 1
                         }
 
-                        db.collection('Salas').doc(Sala_Atual.Criador).update({ Pontos })
+                        if(!Contra_Bot) {
+                            db.collection('Salas').doc(Sala_Atual.Criador).update({ Pontos })
+                        } else {
+                            document.getElementById('Valor_Placar_X').innerText = `: ${Pontos.Player1}`
+                            document.getElementById('Valor_Placar_O').innerText = `: ${Pontos.Player2}`
+                        }
                     }
 
                 } else if (resultado.velha) {
@@ -107,10 +252,12 @@ function Marcar_Posicao(Posicao, Jogador, Checar = false, Salvar = false) {
             } else {
                 P_Sua_Vez_Aviso.style.display = 'block'
 
-                if(Num_Jogador != Jogador) {
-                    P_Sua_Vez_Aviso.innerText = 'Sua Vez'
-                } else {
-                    P_Sua_Vez_Aviso.innerText = 'Vez Do Oponente'
+                if(!Contra_Bot) {
+                    if(Num_Jogador != Jogador) {
+                        P_Sua_Vez_Aviso.innerText = 'Sua Vez'
+                    } else {
+                        P_Sua_Vez_Aviso.innerText = 'Vez Do Oponente'
+                    }
                 }
             }
         } else {
@@ -178,14 +325,29 @@ function Reiniciar_JogoDaVelha(Desmarcar_Reiniciar) {
             proxJogador = Sala_Atual.Criador
         }
 
-        db.collection('Salas').doc(Sala_Atual.Criador).update({
-            'Jogadas.Movimentos': [],
-            'Jogadas.Vez_De': proxJogador,
-            'Reiniciar_Jogo': true
-        })
+        if(!Contra_Bot) {
+            db.collection('Salas').doc(Sala_Atual.Criador).update({
+                'Jogadas.Movimentos': [],
+                'Jogadas.Vez_De': proxJogador,
+                'Reiniciar_Jogo': true
+            })
+        } else {
+            Sala_Atual.Jogadas.Movimentos = []
+            Sala_Atual.Jogadas.Vez_De = proxJogador
+            console.log('rapaz')
+            console.log(proxJogador)
+            
+            
+            if(proxJogador == 'Bot') {
+                P_Sua_Vez_Aviso.innerText = 'Vez Do Oponente'
+                Jogadas_Do_Bot()
+            }
+        }
 
     } else if (Desmarcar_Reiniciar) {
-        db.collection('Salas').doc(Sala_Atual.Criador).update({ Reiniciar_Jogo: false })
+        if(!Contra_Bot) {
+            db.collection('Salas').doc(Sala_Atual.Criador).update({ Reiniciar_Jogo: false })
+        }
     }
 
     Inicializar_JogoDaVelha()
